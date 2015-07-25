@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Fridge</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1>Fridge</h1>
+    <p>What is in your fridge?</p>
+    <form action = "" method = "POST">
+    <input type = "text" name = "fName" placeholder = "Food Name"> </input>
+    <input type = "date" name = "expDate" placeholder = "Expiration Date"> </input>
+    <input type = "submit" value = "Put In Fridge">
+    </form> 
+    <br />
+    <ul>
+    <% for (var key in food) { 
+      if (food[key] > 3) {%> <!-- this reads through the object food and prints it in a <ul> -->
+      <li> <%= key + ": " + food[key] + " days until expiration"%> </li> 
+      <%} else if (food[key] >= 0) {%>
+      <li> <font color = "green"> <%= key + ": " + food[key] + " days until expiration"%>     </font> </li>
+      <%} else {%>
+      <li> <font color = "red"> <%= key + ": expired " + food[key]*-1 + " days ago"%> 
+        </font> </li>
+      <% } %>
+      <!-- Creating a "Ate" and "Spoiled" button for each new food item. They name of the input is the same as the name of the food item. -->
+      <form action = "" method = "POST">  
+      <input type = "submit" name = "<%= key %>" value = "Ate" >
+      <form action = "" method = "POST">
+      <input type = "submit" name = "<%= key %>" value = "Spoiled"> 
+      </form> 
+      <% } %>
+    </ul>
+    </br>
+    </br>
+    <!-- At the bottom of the page, I add context for the Eaten and Spoiled variables -->
+    <%= "Products Eaten: " + eaten %> &nbsp; &nbsp; <%= "Products Spoiled: " + spoiled %>  
+  </body>
+</html>
