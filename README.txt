@@ -1,6 +1,7 @@
 README
 
 TO RUN:
+
 Run using
 $ node app.js
 Listening on port 3000
@@ -49,3 +50,8 @@ function all(obj, parameter) {
 } 
 
 ---------------------------------------
+
+If you have any questions or comments you can reach me at mark.janzer@gmail.com
+
+Cheers,
+Mark
