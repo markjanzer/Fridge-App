@@ -19,35 +19,9 @@ If you eat a food product or it goes bad, you can click either the "Ate" or "Spo
 
 If you create multiple items with the same name, the duplicates will have "*" added to their names.
 
-NOTES:
 
-This structure was created using the express generator followed by heavy pruning of things I didn't understand/think were necessary. 
 
---I might just use this code instead to show off more? I'm not sure.  
 
----------------------------------------
-
-function forEach(object, callback) {
-  if (object.isArray)
-    for (var i = 0; i < object.length; i++)
-      callback(object[i]);
-  else 
-    for (var key in object)
-      callback(object[key]);
-  
-}
-
-function all(obj, parameter) {
-  var str = "";
-  var bool = true;
-  forEach(obj, function (a) {
-    if (parameter(a) === false)
-      bool = false;
-  });
-  return bool;
-} 
-
----------------------------------------
 
 If you have any questions or comments you can reach me at mark.janzer@gmail.com
 

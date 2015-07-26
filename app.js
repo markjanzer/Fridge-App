@@ -32,10 +32,10 @@ function firstValue(obj) { // I was having difficulty calling the first property
 //food object and reorders it's properties based on their values. 
 
 function all(object, callback) {   //This is inspired by the higher order all property that 
-  if (object.isArray) {            // I saw in javascript Koans. I defined it with a 
-    for (i = 0; i < object.length; i++) {  //forEach function I created (you can find it in 
-      if (!callback(object[i]))     // the ReadMe), but this way seems more concise. It works 
-        return false;              //for arrays too, just incase. 
+  if (object.isArray) {            // I saw in javascript Koans. I first defined it using a 
+    for (i = 0; i < object.length; i++) {  //forEach, but this is more efficient.
+      if (!callback(object[i]))    
+        return false;               
     }
     return true;
   }
