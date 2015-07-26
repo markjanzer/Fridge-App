@@ -17,13 +17,13 @@ Input a food item and expiration date and it will be added to your current list 
 
 If you eat a food product or it goes bad, you can click either the "Ate" or "Spoiled" button below the item. This adds to a counter to keep track of how many food items you have eaten or let spoil. 
 
-If you were to have multiples of the same food product with different expiration dates, name them different things (ex. "bread", "Bread", "BREEAAAAD", etc.) Or if you want to change the expiration date for an item, create a "new item" using the same name and it'll overwrite the expiration date. 
+If you create multiple items with the same name, the duplicates will have "*" added to their names.
 
 NOTES:
 
 This structure was created using the express generator followed by heavy pruning of things I didn't understand/think were necessary. 
 
-Here is an alternate definition of the function "all". This is meant to determine if all of the values of an object pass a test which is defined by a callback function.
+--I might just use this code instead to show off more? I'm not sure.  
 
 ---------------------------------------
 
@@ -38,15 +38,13 @@ function forEach(object, callback) {
 }
 
 function all(obj, parameter) {
-  var str = ""
+  var str = "";
+  var bool = true;
   forEach(obj, function (a) {
     if (parameter(a) === false)
-      str = "f";  
+      bool = false;
   });
-  if (str === "f")
-    return false;
-  else 
-    return true;
+  return bool;
 } 
 
 ---------------------------------------

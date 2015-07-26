@@ -72,6 +72,8 @@ function sort (obj) {  //while the original object is not empty, this function s
 
 app.post('/', function (req, res) {
   if (req.body.fName) {  //if Post is fName, it adds the property and value to the food array,
+    if (req.body.fName in food) //These lines allow for items of the same name to be added. 
+      req.body.fName += "*"; 
     food[req.body.fName] = daysToGo(req.body.expDate); //and then sorts the array.
     food = sort(food); }
   else if (req.body[firstValue(req.body)] === "Ate") { //I use firstValue to find the value to
