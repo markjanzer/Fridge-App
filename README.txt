@@ -2,9 +2,9 @@ README
 
 TO RUN:
 
-Run using
-$ node app.js
-Listening on port 3000
+Download the modules in the package.json
+Run using: $ node app.js
+It runs at http://localhost:3000/
 Best viewed on FireFox (Chrome buttons are large).
 
 TO USE:
@@ -19,7 +19,11 @@ If you eat a food product or it goes bad, you can click either the "Ate" or "Spo
 
 If you create multiple items with the same name, the duplicates will have "*" added to their names.
 
+If you have at least one item in your fridge and nothing is currently spoiled, you will be congratulated!
 
+NOTES:
+
+Currently everything is stored in memory, so if you lose the browser, you lose all of the data. My next step is to add a database so the data is saved. 
 
 
 

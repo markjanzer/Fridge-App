@@ -1,87 +1,119 @@
 var express = require('express');
 var app = express();
-var routes = require('./routes/index');
 var bodyParser = require('body-parser');
 
-app.use(bodyParser.urlencoded({ extended: false })); //this was taken from express generator.
+// This app.use for bodyParser was taken from express generator.
+app.use(bodyParser.urlencoded({ extended: false })); 
 app.set('view engine', 'ejs');                       
 
-var food = {};
+var food = [];
 var eaten = 0;
-var spoiled = 0; //Declared all necessary variables.
+var spoiled = 0; 
 
-app.get('/', function (req, res) { // For the initial calling of the page
-  res.render('index', {food: food, eaten: eaten, spoiled: spoiled});
+// For the initial calling of the page
+// I need help because I res.render "firstKey: firstKey" and the other functions did not 
+// carry over to index.ejs
+app.get('/', function (req, res) { 
+  res.render('index', {food: food, eaten: eaten, spoiled: spoiled, 
+    daysTillExpiration: daysTillExpiration, firstKey: firstKey, DTEFromItem: DTEFromItem
+  });
 });
 
 //---------- Below are functions I wrote to help the app process the POST requests
 
-function daysToGo (a) {  //This gets a date object and returns the # days till expiration
+// This gets a date object and returns the # days till expiration
+function daysTillExpiration (expirationDate) {  
   var now = new Date();
-  var exp = new Date(a);
+  var exp = new Date(expirationDate);
   var left = exp.getTime() - now.getTime();
   return (Math.ceil(left/(1000 * 60 * 60 * 24)))
 }
 
-function firstValue(obj) { // I was having difficulty calling the first property in the req 
-  for (var key in obj)     // object, so this was needed for creating buttons unique to 
-    return key;            // each food item.
+// I was having difficulty calling the first property in objects, so I made this
+function firstKey(obj) {  
+  for (var key in obj)      
+    return key;            
 }
 
-//The following two functions are created for the sort function. The sort function takes the
-//food object and reorders it's properties based on their values. 
+//The prior two allow for this function: "Date Till Expiration From Item".
+//The input is something like {Potato: July 26, 2015}
+function DTEFromItem (foodItem) {
+  return daysTillExpiration(foodItem[firstKey(foodItem)]);
+}
 
-function all(object, callback) {   //This is inspired by the higher order all property that 
-  if (object.isArray) {            // I saw in javascript Koans. I first defined it using a 
-    for (i = 0; i < object.length; i++) {  //forEach, but this is more efficient.
-      if (!callback(object[i]))    
-        return false;               
+
+// This is inspired by the higher order all property that I saw in javascript Koans. I first
+// defined it using a forEach, but this is more efficient. I use this to congratulate the user
+// if they have no expired food in their fridge.
+function all(object, callback) {    
+  if (object.isArray) {            
+    for (i = 0; i < object.length; i++) {  
+      if (!callback(object[i])) {    
+        return false; }              
     }
-    return true;
   }
-  else 
+  else {
     for (var key in object) {
-      if (!callback(object[key]))
-        return false;
+      if (!callback(object[key])) {
+        return false; }
     }
-    return true;
-};
-
-function objLength (obj) {  //Finds the length of an object. I needed this so I could 
-  var counter = 0;          // determine when the object was empty, as 
-  for (var keys in obj)     //  obj === {} does not work. 
-    counter++;
-  return counter;
-};
-
-function sort (obj) {  //while the original object is not empty, this function searches
-  var newObj = {};     // through that object and if it finds a property with the lowest
-  while (objLength(obj) > 0) {  //value it will push it to newObj and remove it from the 
-    for (var key in obj) {      //original. When original is empty, it returns newObj.
-      var temp = obj[key];
-      if (all(obj, function (a) {return (a >= temp)})) {
-        newObj[key] = obj[key];
-        delete obj[key];
-      }
-    }	
   }
-  return newObj;
+  return true;
 };
+
+// Finds the index of a food item. Needed for ate and spoiled buttons.
+function returnIndexOf (foodName) {
+  for (var i = 0; i < food.length; i++) {
+    if (firstKey(food[i]) === foodName) {
+      return i;
+    }
+  }
+}
+
+// Needed to identify if food
+function checkIfInFood (foodName) {
+  for (var i = 0; i< food.length; i++) {
+    if (firstKey(food[i]) === foodName)
+      return true;
+  }
+  return false;
+}
+
+
 
 //----------------
 
 app.post('/', function (req, res) {
-  if (req.body.fName) {  //if Post is fName, it adds the property and value to the food array,
-    if (req.body.fName in food) //These lines allow for items of the same name to be added. 
+  // If Post is fName, it adds the property and value to the food array
+  if (req.body.fName) {  
+    // This changes the name with a "*" until the name is unique
+    while (checkIfInFood(req.body.fName)) {
       req.body.fName += "*"; 
-    food[req.body.fName] = daysToGo(req.body.expDate); //and then sorts the array.
-    food = sort(food); }
-  else if (req.body[firstValue(req.body)] === "Ate") { //I use firstValue to find the value to
-  	delete food[firstValue(req.body)];  //identify whether it is ate or spoiled, then delete 
-  	eaten += 1; }                       //from food and add one to the appropriate counter.
-  else if (req.body[firstValue(req.body)] === "Spoiled") {
-  	delete food[firstValue(req.body)];
-  	spoiled += 1; }
+      console.log(req.body.fName);
+    }
+    //Creat the individual object to addd it to the array.
+    var foodObject = {};
+    foodObject[req.body.fName] = req.body.expDate;
+    food.push(foodObject)
+  }
+    // If the req.body object has a key of Ate or Spoiled (if the buttons are pushed),
+    // then one of these carries out. These find the index of the item that is to be
+    // removed, uses it to splice and remove the object from the food array, and then
+    // adds 1 to the correlating counter. 
+  else if (req.body[firstKey(req.body)] === "Ate") { 
+    var indexOfFoodItem = returnIndexOf(firstKey(req.body));
+  	food.splice(indexOfFoodItem, indexOfFoodItem + 1);
+  	eaten += 1; }                       
+  else if (req.body[firstKey(req.body)] === "Spoiled") {
+  	var indexOfFoodItem = returnIndexOf(firstKey(req.body));
+    food.splice(indexOfFoodItem, indexOfFoodItem + 1);
+    spoiled += 1;
+  }
+  // This sorts the food array using the .sort method. It sorts by expiration date in
+  // from earliest to latest. 
+  food.sort(function (a, b) {
+    return (daysTillExpiration(a[firstKey(a)]) - daysTillExpiration(b[firstKey(b)]));
+  });
   res.render('index', {food: food, eaten: eaten, spoiled: spoiled});
 });
 
