@@ -119,7 +119,6 @@ app.post('/', function (req, res) {
   // Use these to define the variables foodWDaysLeft and congratulate
   var foodWDaysLeft = getFoodWDaysLeft();
   var congratulate = getCongratulate(foodWDaysLeft);
-  console.log(foodWDaysLeft);
   res.render('index', {food: food, foodWDaysLeft: foodWDaysLeft, eaten: eaten, 
     spoiled: spoiled, congratulate: congratulate});
 });
