@@ -32,7 +32,8 @@ function forEach (obj, callback) {
   }
 }
 
-// This is inspired by the higher order "all" property that I saw in Javascript Koans.
+// This is inspired by the higher order "all" property that I saw in Javascript Koans. This tests if all
+// of the values in an object pass a test, while "any" sees if any of them do.
 function all(object, test) {    
   var bool = true;
   forEach(object, function (objValue) {
@@ -62,8 +63,7 @@ function getDaysTillExpiration (expirationDate) {
 }
 
 // Finds and removes an item from food.
-function removeItem (foodName) {
-  var index = undefined;
+function removeItem (removeFood) {
   for (var i = 0; i < food.length; i++) {
     if (food[i].fName === foodName) {
       food.splice(i, i + 1);
@@ -71,9 +71,9 @@ function removeItem (foodName) {
   }
 }
 
-// This defines the boolean 'congratulate.' Congratulates the user if no food is spoiled,
+// This is used to define the boolean 'congratulate.' Congratulates the user if no food is spoiled,
 // but there also has to be food in the fridge. 
-function doWeCongratulate (foodArray) {
+function getCongratulate (foodArray) {
   var noSpoiled = (all(foodArray, function (foodItem) {
     return (foodItem.daysTillExp >= 0);
   }));
@@ -81,7 +81,8 @@ function doWeCongratulate (foodArray) {
   return (noSpoiled && notEmpty);
 } 
 
-/* Comment this */
+// This is used to define foodWDaysLeft, a copy of food that has days left rather than expiration dates. 
+// This is the object that is passed to index.ejs rather than the original food array.
 function getFoodWDaysLeft () {
   var newFoodArr = [];
   forEach(food, function (foodItem) {
@@ -96,7 +97,7 @@ function getFoodWDaysLeft () {
 app.post('/', function (req, res) {
   // This checks if the POST is from a submitted food item
   if (req.body.fName && req.body.eDate) {  
-    // This changes the name with a "*" until the name is unique
+    // This changes the name of the submitted fooditem until the name is unique
     while (any(food, function (foodItem) {
       return (foodItem.fName === req.body.fName);
     })) {
@@ -110,14 +111,14 @@ app.post('/', function (req, res) {
   	removeItem(req.body.fName);
     spoiled += 1;
   }
-  /* This sorts the food array using the .sort method. It sorts by expiration date in
-   from earliest to latest. */
+  //This sorts the food array using the .sort method. It sorts by expiration date in
+  // from earliest to latest. 
   food.sort(function (a, b) {
     return (getDaysTillExpiration(a.eDate) - getDaysTillExpiration(b.eDate));
   });
   // Use these to define the variables foodWDaysLeft and congratulate
   var foodWDaysLeft = getFoodWDaysLeft();
-  var congratulate = doWeCongratulate(foodWDaysLeft);
+  var congratulate = getCongratulate(foodWDaysLeft);
   console.log(foodWDaysLeft);
   res.render('index', {food: food, foodWDaysLeft: foodWDaysLeft, eaten: eaten, 
     spoiled: spoiled, congratulate: congratulate});

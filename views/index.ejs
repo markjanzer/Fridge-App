@@ -24,7 +24,6 @@
       <li> <font color = "red"> <%= foodWDaysLeft[i].fName + ": expired " + foodWDaysLeft[i].daysTillExp*-1 + " days ago" %> 
       </font> </li>
       <% } %>
-      <!-- Creating a "Ate" and "Spoiled" button for each new food item. They name of the input is the same as the name of the food item. -->
       <form action = "" method = "POST">  
       <input type = "hidden" name = "fName" value = "<%= foodWDaysLeft[i].fName %>">
       <input type = "submit" name = "Status" value = "Ate">
@@ -41,7 +40,6 @@
       <% } %>
     </p>
     </br>
-    <!-- At the bottom of the page, I add context for the Eaten and Spoiled variables -->
     <%= "Products Eaten: " + eaten %> &nbsp; &nbsp; <%= "Products Spoiled: " + spoiled %>  
   </body>
 </html>
