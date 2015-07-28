@@ -7,10 +7,6 @@
   <body>
     <h1>Fridge</h1>
     <p>What is in your fridge?</p>
-    <p> <%if (congratulate) { %>
-      Congratulations, you have no spoiled food in your fridge!
-      <% } %>
-    </p>
     <form action = "" method = "POST">
     <input type = "text" name = "fName" placeholder = "Food Name"> </input>
     <input type = "date" name = "eDate" placeholder = "Expiration Date"> </input>
@@ -18,28 +14,32 @@
     </form> 
     <br />
     <ul>
-    <% for (var i = 0; i < foodDays.length; i++) { 
-      if (foodDays[i].eDate > 3) {%> 
-      <li> <%= foodDays[i].fName + ": " + foodDays[i].eDate + " days until expiration"%> </li> 
-      <%} else if (foodDays[i].eDate >= 0) {%>
-      <li> <font color = "green"> <%= foodDays[i].fName + ": " + foodDays[i].eDate + " days until expiration"%> 
+    <% for (var i = 0; i < foodWDaysLeft.length; i++) { 
+      if (foodWDaysLeft[i].daysTillExp > 3) {%> 
+      <li> <%= foodWDaysLeft[i].fName + ": " + foodWDaysLeft[i].daysTillExp + " days until expiration"%> </li> 
+      <%} else if (foodWDaysLeft[i].daysTillExp >= 0) {%>
+      <li> <font color = "green"> <%= foodWDaysLeft[i].fName + ": " + foodWDaysLeft[i].daysTillExp + " days until expiration"%> 
       </font> </li>
       <%} else {%>
-      <li> <font color = "red"> <%= foodDays[i].fName + ": expired " + foodDays[i].eDate*-1 + " days ago" %> 
+      <li> <font color = "red"> <%= foodWDaysLeft[i].fName + ": expired " + foodWDaysLeft[i].daysTillExp*-1 + " days ago" %> 
       </font> </li>
       <% } %>
       <!-- Creating a "Ate" and "Spoiled" button for each new food item. They name of the input is the same as the name of the food item. -->
       <form action = "" method = "POST">  
-      <input type = "hidden" name = "fName" value = "<%= foodDays[i].fName %>">
+      <input type = "hidden" name = "fName" value = "<%= foodWDaysLeft[i].fName %>">
       <input type = "submit" name = "Status" value = "Ate">
       </form>
       <form action = "" method = "POST">
-      <input type = "hidden" name = "fName" value = "<%= foodDays[i].fName %>">
+      <input type = "hidden" name = "fName" value = "<%= foodWDaysLeft[i].fName %>">
       <input type = "submit" name = "Status" value = "Spoiled">      
       </form> 
       <% } %>
     </ul>
     </br>
+    <p> <%if (congratulate) { %>
+      Congratulations, you have no spoiled food in your fridge!
+      <% } %>
+    </p>
     </br>
     <!-- At the bottom of the page, I add context for the Eaten and Spoiled variables -->
     <%= "Products Eaten: " + eaten %> &nbsp; &nbsp; <%= "Products Spoiled: " + spoiled %>  

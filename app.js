@@ -10,11 +10,11 @@ var food = [];
 var eaten = 0;
 var spoiled = 0; 
 var congratulate = false;
-var foodDays = [];
+var foodWDaysLeft = [];
 
 app.get('/', function (req, res) { 
   res.render('index', {eaten: eaten, spoiled: spoiled, congratulate: congratulate, 
-    foodDays: foodDays
+    foodWDaysLeft: foodWDaysLeft
   });
 });
 
@@ -54,7 +54,7 @@ function any(object, test) {
 }
 
 // This gets a date object and returns the number of days till expiration
-function daysTillExpiration (expirationDate) {  
+function getDaysTillExpiration (expirationDate) {  
   var now = new Date();
   var exp = new Date(expirationDate);
   var left = exp.getTime() - now.getTime();
@@ -71,32 +71,23 @@ function removeItem (foodName) {
   }
 }
 
-/* This defines the boolean 'congratulate.' Congratulates the user if no food is spoiled,
-but there also has to be food in the fridge. 
-*/
-function doWeCongratulate () {
-  var noSpoiled = (all(foodDays, function (foodItem) {
-    return (foodItem.eDate >= 0);
+// This defines the boolean 'congratulate.' Congratulates the user if no food is spoiled,
+// but there also has to be food in the fridge. 
+function doWeCongratulate (foodArray) {
+  var noSpoiled = (all(foodArray, function (foodItem) {
+    return (foodItem.daysTillExp >= 0);
   }));
   var notEmpty = (food.length > 0);
   return (noSpoiled && notEmpty);
 } 
 
-/* Copying arrays and the objects within the arrays was a little difficult. I couldn't do 
-foodDays = food, so I push all of the objects into foodDays. However, objects also are tricky
-to copy. I found this way with JSON on the internet and it seems to work great. After I copy 
-the array (in a way that won't affect the original), I change the eDate value to be days until
-the expiration. index.ejs will use this array instead of the original 'food' array. */
-function defineFoodDays () {
-  console.log(foodDays);
-  var newFoodObj = [];
+/* Comment this */
+function getFoodWDaysLeft () {
+  var newFoodArr = [];
   forEach(food, function (foodItem) {
-    var newObj = {};
-    newObj.fName = foodItem.fName;
-    newObj.eDate = daysTillExpiration(foodItem.eDate);
-    return newFoodObj.push(newObj);
+    return newFoodArr.push({fName: foodItem.fName, daysTillExp: getDaysTillExpiration(foodItem.eDate)});
   });
-  return newFoodObj;
+  return newFoodArr;
 }
 
 
@@ -122,13 +113,14 @@ app.post('/', function (req, res) {
   /* This sorts the food array using the .sort method. It sorts by expiration date in
    from earliest to latest. */
   food.sort(function (a, b) {
-    return (daysTillExpiration(a.eDate) - daysTillExpiration(b.eDate));
+    return (getDaysTillExpiration(a.eDate) - getDaysTillExpiration(b.eDate));
   });
-  // Use these to define the variables foodDays and congratulate
-  var foodDays = defineFoodDays();
-  var congratulate = doWeCongratulate();
-  res.render('index', {food: food, foodDays: foodDays, eaten: eaten, spoiled: spoiled, 
-    congratulate: congratulate});
+  // Use these to define the variables foodWDaysLeft and congratulate
+  var foodWDaysLeft = getFoodWDaysLeft();
+  var congratulate = doWeCongratulate(foodWDaysLeft);
+  console.log(foodWDaysLeft);
+  res.render('index', {food: food, foodWDaysLeft: foodWDaysLeft, eaten: eaten, 
+    spoiled: spoiled, congratulate: congratulate});
 });
 
 var server = app.listen(3000, function() {
