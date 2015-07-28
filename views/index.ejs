@@ -22,9 +22,11 @@
       if (foodDays[i].eDate > 3) {%> 
       <li> <%= foodDays[i].fName + ": " + foodDays[i].eDate + " days until expiration"%> </li> 
       <%} else if (foodDays[i].eDate >= 0) {%>
-      <li> <font color = "green"> <%= foodDays[i].fName + ": " + foodDays[i].eDate + " days until expiration"%> </font> </li>
+      <li> <font color = "green"> <%= foodDays[i].fName + ": " + foodDays[i].eDate + " days until expiration"%> 
+      </font> </li>
       <%} else {%>
-      <li> <font color = "red"> <%= foodDays[i].fName + ": expired " + foodDays[i].eDate*-1 + " days ago" %> </font> </li>
+      <li> <font color = "red"> <%= foodDays[i].fName + ": expired " + foodDays[i].eDate*-1 + " days ago" %> 
+      </font> </li>
       <% } %>
       <!-- Creating a "Ate" and "Spoiled" button for each new food item. They name of the input is the same as the name of the food item. -->
       <form action = "" method = "POST">  
