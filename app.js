@@ -75,11 +75,11 @@ function removeItem (foodName) {
 but there also has to be food in the fridge. 
 */
 function doWeCongratulate () {
-  var noSpoiled = all(foodDays, function (foodItem) {
+  var noSpoiled = (all(foodDays, function (foodItem) {
     return (foodItem.eDate >= 0);
-  });
+  }));
   var notEmpty = (food.length > 0);
-  congratulate = (noSpoiled && notEmpty);
+  return (noSpoiled && notEmpty);
 } 
 
 /* Copying arrays and the objects within the arrays was a little difficult. I couldn't do 
@@ -88,13 +88,15 @@ to copy. I found this way with JSON on the internet and it seems to work great. 
 the array (in a way that won't affect the original), I change the eDate value to be days until
 the expiration. index.ejs will use this array instead of the original 'food' array. */
 function defineFoodDays () {
-  foodDays = [];
+  console.log(foodDays);
+  var newFoodObj = [];
   forEach(food, function (foodItem) {
-    return foodDays.push((JSON.parse(JSON.stringify(foodItem))));
+    var newObj = {};
+    newObj.fName = foodItem.fName;
+    newObj.eDate = daysTillExpiration(foodItem.eDate);
+    return newFoodObj.push(newObj);
   });
-  forEach(foodDays, function (foodItem) {
-    foodItem.eDate = daysTillExpiration(foodItem.eDate);
-  });
+  return newFoodObj;
 }
 
 
@@ -123,8 +125,8 @@ app.post('/', function (req, res) {
     return (daysTillExpiration(a.eDate) - daysTillExpiration(b.eDate));
   });
   // Use these to define the variables foodDays and congratulate
-  defineFoodDays();
-  doWeCongratulate();
+  var foodDays = defineFoodDays();
+  var congratulate = doWeCongratulate();
   res.render('index', {food: food, foodDays: foodDays, eaten: eaten, spoiled: spoiled, 
     congratulate: congratulate});
 });
