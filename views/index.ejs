@@ -7,68 +7,33 @@
   <body>
     <h1>Fridge</h1>
     <p>What is in your fridge?</p>
-    <p> <%if (all(food, function (foodItem) {
-      return (DTEFromItem(foodItem) >= 0); }) 
-      &&
-      (food.length > 0)) { %>
-      Congratulations, you have no spoiled food!
+    <p> <%if (congratulate) { %>
+      Congratulations, you have no spoiled food in your fridge!
       <% } %>
     </p>
-    
     <form action = "" method = "POST">
     <input type = "text" name = "fName" placeholder = "Food Name"> </input>
-    <input type = "date" name = "expDate" placeholder = "Expiration Date"> </input>
+    <input type = "date" name = "eDate" placeholder = "Expiration Date"> </input>
     <input type = "submit" value = "Put In Fridge">
     </form> 
-    <%
-    function all(object, callback) {    
-      if (object.isArray) {            
-        for (i = 0; i < object.length; i++) {  
-          if (!callback(object[i])) {    
-            return false; }              
-        }
-      }
-      else {
-        for (var key in object) {
-          if (!callback(object[key])) {
-            return false; }
-        }
-       }
-      return true;
-    };
-
-    function daysTillExpiration (expirationDate) {  
-      var now = new Date();
-      var exp = new Date(expirationDate);
-      var left = exp.getTime() - now.getTime();
-      return (Math.ceil(left/(1000 * 60 * 60 * 24)))
-    }
-
-    function firstKey(obj) {  
-      for (var key in obj)      
-        return key;            
-    }
-
-    function DTEFromItem (foodItem) {
-      return daysTillExpiration(foodItem[firstKey(foodItem)]);
-    }
-    %>
     <br />
     <ul>
-    <% for (var i = 0; i < food.length; i++) { 
-      if (DTEFromItem(food[i]) > 3) {%> 
-      <li> <%= firstKey(food[i]) + ": " + DTEFromItem(food[i]) + " days until expiration"%> </li> 
-      <%} else if (DTEFromItem(food[i]) >= 0) {%>
-      <li> <font color = "green"> <%= firstKey(food[i]) + ": " + DTEFromItem(food[i]) + " days until expiration"%>     </font> </li>
+    <% for (var i = 0; i < foodDays.length; i++) { 
+      if (foodDays[i].eDate > 3) {%> 
+      <li> <%= foodDays[i].fName + ": " + foodDays[i].eDate + " days until expiration"%> </li> 
+      <%} else if (foodDays[i].eDate >= 0) {%>
+      <li> <font color = "green"> <%= foodDays[i].fName + ": " + foodDays[i].eDate + " days until expiration"%> </font> </li>
       <%} else {%>
-      <li> <font color = "red"> <%= firstKey(food[i]) + ": expired " + DTEFromItem(food[i])*-1 + " days ago"%>
-        </font> </li>
+      <li> <font color = "red"> <%= foodDays[i].fName + ": expired " + foodDays[i].eDate*-1 + " days ago" %> </font> </li>
       <% } %>
       <!-- Creating a "Ate" and "Spoiled" button for each new food item. They name of the input is the same as the name of the food item. -->
       <form action = "" method = "POST">  
-      <input type = "submit" name = "<%= firstKey(food[i]) %>" value = "Ate" >
+      <input type = "hidden" name = "fName" value = "<%= foodDays[i].fName %>">
+      <input type = "submit" name = "Status" value = "Ate">
+      </form>
       <form action = "" method = "POST">
-      <input type = "submit" name = "<%= firstKey(food[i]) %>" value = "Spoiled"> 
+      <input type = "hidden" name = "fName" value = "<%= foodDays[i].fName %>">
+      <input type = "submit" name = "Status" value = "Spoiled">      
       </form> 
       <% } %>
     </ul>
